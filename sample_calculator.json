@@ -1,0 +1,107 @@
+{
+  "id": "wp_web_agency_quote_v1",
+  "slug": "web-agency-quote",
+  "title": "Website & SEO Lead Quote Calculator",
+  "version": "1.2.0",
+  "currency": {
+    "code": "USD",
+    "symbol": "$",
+    "decimals": 2,
+    "position": "prefix",
+    "thousand_sep": ",",
+    "decimal_sep": "."
+  },
+  "base_price": "490.00",
+  "min_price": "350.00",
+  "max_price": "25000.00",
+  "fields": [
+    {
+      "id": "site_tier",
+      "type": "select",
+      "label": "Website Package",
+      "required": true,
+      "default": "business",
+      "options": [
+        { "value": "landing", "label": "Single Landing Page", "price": "0.00", "multiplier": "1.0" },
+        { "value": "business", "label": "Business Website", "price": "650.00", "multiplier": "1.0" },
+        { "value": "ecommerce", "label": "WooCommerce Store", "price": "1450.00", "multiplier": "1.15" }
+      ]
+    },
+    {
+      "id": "pages_count",
+      "type": "range",
+      "label": "Number of Custom Pages",
+      "required": true,
+      "min": 1,
+      "max": 40,
+      "step": 1,
+      "default": 5,
+      "unit_price": "85.00"
+    },
+    {
+      "id": "addons",
+      "type": "checkbox",
+      "label": "Optional Add-ons",
+      "required": false,
+      "default": [],
+      "options": [
+        { "value": "seo_setup", "label": "Technical SEO Setup", "price": "320.00" },
+        { "value": "copywriting", "label": "Conversion Copywriting", "price": "480.00" },
+        { "value": "crm_sync", "label": "CRM Webhook Integration", "price": "250.00" }
+      ]
+    },
+    {
+      "id": "rush_delivery",
+      "type": "toggle",
+      "label": "Priority 7-Day Delivery",
+      "required": false,
+      "default": false,
+      "price": "390.00"
+    },
+    {
+      "id": "retainer_months",
+      "type": "number",
+      "label": "Support Retainer (Months)",
+      "required": false,
+      "min": 0,
+      "max": 12,
+      "step": 1,
+      "default": 0,
+      "unit_price": "190.00"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule_enterprise_page_discount",
+      "description": "10% discount when ordering 15+ custom pages",
+      "logic": "AND",
+      "conditions": [
+        { "field": "pages_count", "op": ">=", "value": 15 }
+      ],
+      "action": "discount_percent",
+      "value": "10"
+    },
+    {
+      "id": "rule_retainer_bonus",
+      "description": "$120 credit when bundling 6+ months support with Business/WooCommerce",
+      "logic": "AND",
+      "conditions": [
+        { "field": "retainer_months", "op": ">=", "value": 6 },
+        { "field": "site_tier", "op": "in", "value": ["business", "ecommerce"] }
+      ],
+      "action": "add",
+      "value": "-120.00"
+    },
+    {
+      "id": "rule_rush_ecommerce_surcharge",
+      "description": "Additional complexity surcharge for rush WooCommerce builds",
+      "logic": "AND",
+      "conditions": [
+        { "field": "site_tier", "op": "==", "value": "ecommerce" },
+        { "field": "rush_delivery", "op": "==", "value": true }
+      ],
+      "action": "add",
+      "value": "250.00"
+    }
+  ]
+}
